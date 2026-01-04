@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sepolia Faucet DApp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Ethers.js -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: #020617;
+      padding: 25px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #2563eb;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      margin-top: 10px;
+    }
+
+    .status {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>🚰 Sepolia Faucet</h1>
+
+    <button onclick="connectWallet()">Connect Wallet</button>
+
+    <input
+      type="text"
+      id="address"
+      placeholder="Enter wallet address"
+    />
+
+    <button onclick="requestEth()">Request Sepolia ETH</button>
+
+    <div class="status" id="status">Not connected</div>
+  </div>
+
+  <script>
+    let provider;
+    let signer;
+
+    async function connectWallet() {
+      if (!window.ethereum) {
+        alert("MetaMask not found");
+        return;
+      }
+
+      await ethereum.request({ method: "eth_requestAccounts" });
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      signer = provider.getSigner();
+
+      const address = await signer.getAddress();
+      document.getElementById("address").value = address;
+      document.getElementById("status").innerText =
+        "Connected: " + address.slice(0, 6) + "..." + address.slice(-4);
+    }
+
+    async function requestEth() {
+      const addr = document.getElementById("address").value;
+      if (!ethers.utils.isAddress(addr)) {
+        alert("Invalid address");
+        return;
+      }
+
+      document.getElementById("status").innerText =
+        "Faucet request sent (backend not connected yet)";
+    }
+  </script>
+</body>
+</html>
